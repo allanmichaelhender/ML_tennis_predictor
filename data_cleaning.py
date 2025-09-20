@@ -34,6 +34,9 @@ data["l_bp_saved_per_faced"] = np.where(
     data["l_bpSaved"] / data["l_bpFaced"] # Value if False: perform the normal division
     )
 
+data["w_bp_won_per_faced"] = 1 - data["l_bp_saved_per_faced"]
+data["l_bp_won_per_faced"] = 1 - data["w_bp_saved_per_faced"]
+
 data["w_serve_winloss"] = ( data['w_1stWon'] + data['w_2ndWon'] ) / data['w_svpt']
 data["l_serve_winloss"] = ( data['l_1stWon'] + data['l_2ndWon'] ) / data['l_svpt']
 
@@ -46,8 +49,11 @@ data["l_firstserve_win"] = data['l_1stWon']/data['w_svpt']
 column_mapping = {"winner_id": "w_id", "loser_id": "l_id"}
 data.rename(columns=column_mapping, inplace=True)
 
-data = data[['tourney_date', 'w_id', 'w_games_won', "w_aces_per_serve", "w_bp_saved_per_faced", "w_serve_winloss", "w_nonserve_winloss", "w_firstserve_win",
-             'l_id', 'l_games_won', "l_aces_per_serve", "l_bp_saved_per_faced", "l_serve_winloss", "l_nonserve_winloss", "l_firstserve_win"]]
+data = data[['tourney_date', 'w_id', 'w_games_won', "w_aces_per_serve", "w_bp_saved_per_faced", "w_bp_won_per_faced", "w_serve_winloss", "w_nonserve_winloss", "w_firstserve_win", "winner_rank_points",
+             'l_id', 'l_games_won', "l_aces_per_serve", "l_bp_saved_per_faced", "l_bp_won_per_faced", "l_serve_winloss", "l_nonserve_winloss", "l_firstserve_win", "loser_rank_points"]]
 
+data = data.sort_values(by=['tourney_date', "w_id"], ascending=[False, True])
+data = data.reset_index(drop=True)
 
 print(data.head())
+print(data.iloc[0])
