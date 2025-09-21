@@ -2,10 +2,15 @@ import pandas as pd
 import numpy as np
 from data_functions import calculate_games_add_tiebreak
 
+data_2020 = pd.read_csv("./Data/atp_matches_2020.csv")
+data_2021 = pd.read_csv("./Data/atp_matches_2021.csv")
+data_2022 = pd.read_csv("./Data/atp_matches_2022.csv")
 data_2023 = pd.read_csv("./Data/atp_matches_2023.csv")
 data_2024 = pd.read_csv("./Data/atp_matches_2024.csv")
 
-data = pd.concat([data_2024,data_2023]).sort_values('tourney_date').reset_index(drop=True)
+index_range = len(data_2024) + len(data_2023) + len(data_2022) + len(data_2021)
+
+data = pd.concat([data_2024,data_2023,data_2022,data_2021,data_2020]).sort_values('tourney_date').reset_index(drop=True)
 data.drop(columns=["winner_seed", "winner_entry","loser_seed", "loser_entry", "minutes"], inplace=True)
 data.dropna(inplace=True)
 data.reset_index(drop=True)
@@ -34,8 +39,8 @@ data["l_bp_saved_per_faced"] = np.where(
     data["l_bpSaved"] / data["l_bpFaced"] # Value if False: perform the normal division
     )
 
-data["w_bp_won_per_faced"] = 1 - data["l_bp_saved_per_faced"]
-data["l_bp_won_per_faced"] = 1 - data["w_bp_saved_per_faced"]
+data["w_bp_won_per_achieved"] = 1 - data["l_bp_saved_per_faced"]
+data["l_bp_won_per_achieved"] = 1 - data["w_bp_saved_per_faced"]
 
 data["w_serve_winloss"] = ( data['w_1stWon'] + data['w_2ndWon'] ) / data['w_svpt']
 data["l_serve_winloss"] = ( data['l_1stWon'] + data['l_2ndWon'] ) / data['l_svpt']
@@ -49,11 +54,8 @@ data["l_firstserve_win"] = data['l_1stWon']/data['w_svpt']
 column_mapping = {"winner_id": "w_id", "loser_id": "l_id"}
 data.rename(columns=column_mapping, inplace=True)
 
-data = data[['tourney_date', 'w_id', 'w_games_won', "w_aces_per_serve", "w_bp_saved_per_faced", "w_bp_won_per_faced", "w_serve_winloss", "w_nonserve_winloss", "w_firstserve_win", "winner_rank_points",
-             'l_id', 'l_games_won', "l_aces_per_serve", "l_bp_saved_per_faced", "l_bp_won_per_faced", "l_serve_winloss", "l_nonserve_winloss", "l_firstserve_win", "loser_rank_points"]]
+data = data[['tourney_date', 'w_id', 'w_games_won', "w_aces_per_serve", "w_bp_saved_per_faced", "w_bp_won_per_achieved", "w_serve_winloss", "w_nonserve_winloss", "w_firstserve_win", "winner_rank_points",
+             'l_id', 'l_games_won', "l_aces_per_serve", "l_bp_saved_per_faced", "l_bp_won_per_achieved", "l_serve_winloss", "l_nonserve_winloss", "l_firstserve_win", "loser_rank_points"]]
 
 data = data.sort_values(by=['tourney_date', "w_id"], ascending=[False, True])
 data = data.reset_index(drop=True)
-
-print(data.head())
-print(data.iloc[0])
