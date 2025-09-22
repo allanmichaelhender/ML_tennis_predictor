@@ -1,8 +1,9 @@
 import pandas as pd
-from data_cleaning import data, index_range
+from pyparsing import col
+from .data_cleaning import data, index_range
 import numpy as np
 
-print(index_range)
+#print(index_range)
 row_list = []   
 for index in range(index_range):    
         guess = np.random.randint(0, 2)
@@ -11,7 +12,7 @@ for index in range(index_range):
             player1 = data.iloc[index, data.columns.get_loc('w_id')]
             player2 = data.iloc[index, data.columns.get_loc('l_id')]
 
-            ranking_diff = (data.iloc[index, data.columns.get_loc('winner_rank_points')]-data.iloc[index, data.columns.get_loc('loser_rank_points')])/np.min([data.iloc[index, data.columns.get_loc('winner_rank_points')], data.iloc[index, data.columns.get_loc('loser_rank_points')]])
+            ranking_diff = (data.iloc[index, data.columns.get_loc('winner_rank_points')]-data.iloc[index, data.columns.get_loc('loser_rank_points')])##/np.min([data.iloc[index, data.columns.get_loc('winner_rank_points')], data.iloc[index, data.columns.get_loc('loser_rank_points')]])
 
             player1_w_value = 1
 
@@ -20,7 +21,7 @@ for index in range(index_range):
             player2 = data.iloc[index, data.columns.get_loc('w_id')]
             player1 = data.iloc[index, data.columns.get_loc('l_id')]
 
-            ranking_diff = (data.iloc[index, data.columns.get_loc('loser_rank_points')] - data.iloc[index, data.columns.get_loc('winner_rank_points')])/np.min([data.iloc[index, data.columns.get_loc('winner_rank_points')], data.iloc[index, data.columns.get_loc('loser_rank_points')]])
+            ranking_diff = (data.iloc[index, data.columns.get_loc('loser_rank_points')] - data.iloc[index, data.columns.get_loc('winner_rank_points')])##/np.min([data.iloc[index, data.columns.get_loc('winner_rank_points')], data.iloc[index, data.columns.get_loc('loser_rank_points')]])
 
             player1_w_value = 0
 
@@ -158,6 +159,36 @@ ML_ready_data.to_csv("ML_ready_data.csv")
 
 
 
+
+
+
+players_info = pd.read_csv("./Data/atp_players.csv")
+today_timestamp = pd.to_datetime('2025-01-01')
+six_months_ago = today_timestamp - pd.DateOffset(months=6)
+last_six_months = (data['tourney_date'] >= six_months_ago)
+data_last_six_months = data[last_six_months]
+player_series = pd.concat([data_last_six_months['w_id'], data_last_six_months['l_id']], ignore_index=True)
+value_counts_player_series = player_series.value_counts()
+frequent_entries = value_counts_player_series[value_counts_player_series >= 10].index
+players = pd.DataFrame({'player_id': frequent_entries})
+
+
+players_info = players_info.drop(columns=['hand', 'dob', 'ioc', 'height', 'wikidata_id'])
+players = pd.merge(players, players_info, on='player_id', how='left')
+players['full_name'] = players['name_first'] + ' ' + players['name_last']
+players = players.drop(columns=["name_first", "name_last"])
+
+
+
+ranking_info = pd.read_csv("./Data/ranking_points.csv")
+ranking_info['ranking_points'] = pd.to_numeric(ranking_info['ranking_points'].str.replace(',', ''), errors='coerce')
+
+players = pd.merge(players, ranking_info, on='full_name', how='inner')
+players = players.drop(columns=['id'])
+
+players = players.sort_values(by='ranking_points', ascending=False).reset_index(drop=True)
+
+players.to_csv("players_data.csv")
 
 
 

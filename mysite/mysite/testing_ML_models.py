@@ -33,16 +33,16 @@ print(pipeline_score)
 
 
 
-rank_points = Pipeline([("imputer",SimpleImputer(strategy='mean'))])
+#rank_points = Pipeline([("imputer",SimpleImputer(strategy='mean'))])
 non_rank_points = Pipeline([("imputer",SimpleImputer(strategy='mean')), ("scale",StandardScaler())])
 
 
-rank_points_col = ["ranking_diff"]
-non_rank_cols = X.drop(columns=["ranking_diff"]).columns
+#rank_points_col = ["ranking_diff"]
+non_rank_cols = X.columns#.drop(columns=["ranking_diff"]).columns
 
 preprocess = ColumnTransformer(
     transformers=[
-        ("rank_points_process", rank_points, rank_points_col),
+        #("rank_points_process", rank_points, rank_points_col),
         ("non_rank_process", non_rank_points, non_rank_cols)
     ]
 )

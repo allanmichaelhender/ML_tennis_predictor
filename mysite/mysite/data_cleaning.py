@@ -1,12 +1,23 @@
 import pandas as pd
 import numpy as np
-from data_functions import calculate_games_add_tiebreak
+from .data_functions import calculate_games_add_tiebreak
+import os
+from . import settings
 
-data_2020 = pd.read_csv("./Data/atp_matches_2020.csv")
-data_2021 = pd.read_csv("./Data/atp_matches_2021.csv")
-data_2022 = pd.read_csv("./Data/atp_matches_2022.csv")
-data_2023 = pd.read_csv("./Data/atp_matches_2023.csv")
-data_2024 = pd.read_csv("./Data/atp_matches_2024.csv")
+data_2020_path = os.path.join(settings.BASE_DIR, 'mysite/Data/', 'atp_matches_2020.csv')
+data_2020 = pd.read_csv(data_2020_path)
+
+data_2021_path = os.path.join(settings.BASE_DIR, 'mysite/Data/', 'atp_matches_2021.csv')
+data_2021 = pd.read_csv(data_2021_path)
+
+data_2022_path = os.path.join(settings.BASE_DIR, 'mysite/Data/', 'atp_matches_2022.csv')
+data_2022 = pd.read_csv(data_2022_path)
+
+data_2023_path = os.path.join(settings.BASE_DIR, 'mysite/Data/', 'atp_matches_2023.csv')
+data_2023 = pd.read_csv(data_2023_path)
+
+data_2024_path = os.path.join(settings.BASE_DIR, 'mysite/Data/', 'atp_matches_2024.csv')
+data_2024 = pd.read_csv(data_2024_path)
 
 index_range = len(data_2024) + len(data_2023) + len(data_2022) + len(data_2021)
 
