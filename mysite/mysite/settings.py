@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -73,18 +75,23 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ML_tennis',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+load_dotenv()
 
+# Get the database URL from the environment.
+# Ensure it is a string and not bytes.
+database_url = os.getenv("DATABASE_URL")
+
+# Check if database_url is bytes and decode if necessary
+if isinstance(database_url, bytes):
+    database_url = database_url.decode("utf-8")
+
+DATABASES = {
+    'default': dj_database_url.parse(
+        database_url,
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

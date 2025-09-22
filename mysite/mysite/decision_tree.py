@@ -10,14 +10,15 @@ from sklearn.compose import ColumnTransformer
 import os
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
-from . import settings
 import joblib
+# from . import settings
 
-dataframe_path = os.path.join(settings.BASE_DIR, 'mysite', 'ML_ready_data.csv')
+
+# dataframe_path = os.path.join(settings.BASE_DIR, 'mysite', 'ML_ready_data.csv')
 
 
-dataframe = pd.read_csv(dataframe_path, index_col=0)
-#dataframe = pd.read_csv('ML_ready_data.csv', index_col=0)
+# dataframe = pd.read_csv(dataframe_path, index_col=0)
+dataframe = pd.read_csv('ML_ready_data.csv', index_col=0)
                         
 X = dataframe.drop(columns=["player1_win"])
 y = dataframe['player1_win']
@@ -32,3 +33,5 @@ pipeline_score = pipeline.score(x_test, y_test)
 decision_tree_model = pipeline.named_steps['decision_tree']
 
 joblib.dump(pipeline, 'decision_tree_pipeline.joblib')
+
+print(pipeline_score)
