@@ -5,7 +5,22 @@
 {% endblock %}
 
 {% block  content%}
-    <h1>Decision Tree</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if message %}
+        <h2>{{ message }}</h2>
+    {% endif %}
     
+    {% if return_val.0.1%}
+    <br>    
+    <h2>Probability {{player_one}} wins is {{return_val.0.1}}</h2>
+    <br>
+    <h2>Probability {{player_two}} wins is {{return_val.0.0}}</h2>
+    {% endif %}
+
 {% endblock %}
     

@@ -4,6 +4,21 @@ from .data_functions import calculate_games_add_tiebreak
 import os
 from . import settings
 
+data_2015_path = os.path.join(settings.BASE_DIR, 'mysite/Data/', 'atp_matches_2015.csv')
+data_2015 = pd.read_csv(data_2015_path)
+
+data_2016_path = os.path.join(settings.BASE_DIR, 'mysite/Data/', 'atp_matches_2016.csv')
+data_2016 = pd.read_csv(data_2016_path)
+
+data_2017_path = os.path.join(settings.BASE_DIR, 'mysite/Data/', 'atp_matches_2017.csv')
+data_2017 = pd.read_csv(data_2017_path)
+
+data_2018_path = os.path.join(settings.BASE_DIR, 'mysite/Data/', 'atp_matches_2018.csv')
+data_2018 = pd.read_csv(data_2018_path)
+
+data_2019_path = os.path.join(settings.BASE_DIR, 'mysite/Data/', 'atp_matches_2019.csv')
+data_2019 = pd.read_csv(data_2019_path)
+
 data_2020_path = os.path.join(settings.BASE_DIR, 'mysite/Data/', 'atp_matches_2020.csv')
 data_2020 = pd.read_csv(data_2020_path)
 
@@ -19,7 +34,7 @@ data_2023 = pd.read_csv(data_2023_path)
 data_2024_path = os.path.join(settings.BASE_DIR, 'mysite/Data/', 'atp_matches_2024.csv')
 data_2024 = pd.read_csv(data_2024_path)
 
-index_range = len(data_2024) + len(data_2023) + len(data_2022) + len(data_2021)
+index_range = len(data_2024) + len(data_2023) + len(data_2022) + len(data_2021) + len(data_2020) + len(data_2019) + len(data_2018) + len(data_2017) + len(data_2016)
 
 data = pd.concat([data_2024,data_2023,data_2022,data_2021,data_2020]).sort_values('tourney_date').reset_index(drop=True)
 data.drop(columns=["winner_seed", "winner_entry","loser_seed", "loser_entry", "minutes"], inplace=True)

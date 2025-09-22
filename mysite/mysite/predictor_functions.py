@@ -8,6 +8,12 @@ import numpy as np
 random_forest_path = os.path.join(settings.BASE_DIR, 'mysite', 'random_forest_model.joblib')
 random_forest = joblib.load(random_forest_path)
 
+logistic_regr_pipeline_path = os.path.join(settings.BASE_DIR, 'mysite', 'logistic_regr_pipeline.joblib')
+logistic_regr_pipeline = joblib.load(logistic_regr_pipeline_path)
+
+decision_tree_pipeline_path = os.path.join(settings.BASE_DIR, 'mysite', 'decision_tree_pipeline.joblib')
+decision_tree_pipeline = joblib.load(decision_tree_pipeline_path)
+
 players_csv_path = os.path.join(settings.BASE_DIR, 'mysite', 'players_data.csv')
 players = pd.read_csv(players_csv_path)
 
@@ -113,19 +119,21 @@ def generate_data(player1_full_name, player2_full_name):
     nonserve_winloss_diff = (player1_nonserve_winloss - player2_nonserve_winloss)
     firstserve_win_diff = (player1_firstserve_win - player2_firstserve_win)
 
-    data_list = [ranking_diff, 
-                 match_winloss_diff, 
-                 game_winloss_diff,
-                 aces_per_serve_diff,
-                 bp_saved_per_faced_diff,
-                 bp_won_per_faced_diff,
-                 serve_winloss_diff,
-                 nonserve_winloss_diff,
-                 firstserve_win_diff]
-  
-    formatted_data_list = np.array(data_list).reshape(1, -1)
 
-    return formatted_data_list
+    data_list = pd.DataFrame([{
+                "ranking_diff": ranking_diff,
+                "match_winloss_diff": match_winloss_diff,
+                "game_winloss_diff": game_winloss_diff,
+                "aces_per_serve_diff": aces_per_serve_diff,
+                "bp_saved_per_faced_diff": bp_saved_per_faced_diff,
+                "bp_won_per_achieved_diff": bp_won_per_faced_diff,
+                "serve_winloss_diff": serve_winloss_diff,
+                "nonserve_winloss_diff": nonserve_winloss_diff,
+                "firstserve_win_diff": firstserve_win_diff}])
+  
+    
+
+    return data_list
 
 
 
@@ -138,5 +146,19 @@ def random_forest_predict(player1_full_name, player2_full_name):
     return prediction
 
 
+def logistic_regression_predict(player1_full_name, player2_full_name):
+    
+    formatted_data_list = generate_data(player1_full_name, player2_full_name)
 
+    prediction = logistic_regr_pipeline.predict_proba(formatted_data_list)
+
+    return prediction
+
+def decision_tree_predict(player1_full_name, player2_full_name):
+    
+    formatted_data_list = generate_data(player1_full_name, player2_full_name)
+
+    prediction = decision_tree_pipeline.predict_proba(formatted_data_list)
+
+    return prediction
 
