@@ -2,7 +2,6 @@ import joblib
 import os
 import pandas as pd
 from . import settings
-from .data_cleaning import data
 import numpy as np
 
 random_forest_path = os.path.join(settings.BASE_DIR, 'mysite', 'random_forest_model.joblib')
@@ -16,6 +15,10 @@ decision_tree_pipeline = joblib.load(decision_tree_pipeline_path)
 
 players_csv_path = os.path.join(settings.BASE_DIR, 'mysite', 'players_data.csv')
 players = pd.read_csv(players_csv_path)
+
+data_path = os.path.join(settings.BASE_DIR, 'mysite', 'data.csv')
+data = pd.read_csv(data_path,index_col=0)
+data['tourney_date'] = pd.to_datetime(data['tourney_date'])
 
 def generate_data(player1_full_name, player2_full_name):
     player1_row = players.loc[players['full_name'] == player1_full_name]
