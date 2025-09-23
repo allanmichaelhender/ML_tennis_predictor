@@ -12,8 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url
-from dotenv import load_dotenv
+import environ
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -80,22 +80,26 @@ CSRF_COOKIE_SECURE = True
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-load_dotenv()
+# Create an Environ object instance
+# env = environ.Env()
 
-# Get the database URL from the environment.
-# Ensure it is a string and not bytes.
-database_url = os.getenv("DATABASE_URL")
+# # Read the .env file if it exists. Set the path to where your .env file is located.
+# env.read_env(env_file=str(BASE_DIR / '.env'))
 
-# Check if database_url is bytes and decode if necessary
-if isinstance(database_url, bytes):
-    database_url = database_url.decode("utf-8")
+# # Set the DATABASES configuration using env.db().
+# # The default argument 'sqlite:///db.sqlite3' is a fallback for local development.
+# DATABASES = {
+#     'default': env.db(
+#         'DATABASE_URL',
+#         default='sqlite:///' + str(BASE_DIR / 'db.sqlite3')
+#     )
+# }
 
 DATABASES = {
-    'default': dj_database_url.parse(
-        database_url,
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 # Password validation
